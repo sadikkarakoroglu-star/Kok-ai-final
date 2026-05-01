@@ -1,0 +1,33 @@
+name: K-OS APK BUILDER
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install Buildozer Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0-gstreamer-litedev libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good
+          pip3 install --user --upgrade buildozer cython virtualenv
+
+      - name: Build APK with Buildozer
+        run: |
+          # 🌀 KRITIK: Calculator dosyasini ana giris kapisi yapiyoruz kanka
+          cp calculator_mask.py main.py
+          export PATH=$PATH:$HOME/.local/bin
+          # Tum lisanslari otomatik muhurleyip atesle
+          yes | buildozer -v android debug
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KOK-AI-CALCULATOR
+          path: bin/*.apk
