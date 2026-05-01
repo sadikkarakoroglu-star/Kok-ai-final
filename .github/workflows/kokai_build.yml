@@ -15,20 +15,16 @@ jobs:
       - name: Install Buildozer
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0-gstreamer-litedev libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good
+          # Sorun çıkaran paketleri listeden çıkardım kanka, sadece en kritikleri kuruyoruz
+          sudo apt install -y build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
           pip3 install --user --upgrade buildozer cython virtualenv
 
       - name: Build APK
         run: |
-          # Dosya isimlerini GitHub'ın anlayacağı dile (İngilizce) çeviriyoruz kanka
-          mv beyin.py brain.py || true
-          mv sohbet.py chat.py || true
-          mv kodlayıcı.py coder.py || true
-          mv donanım.py hardware.py || true
-          # Calculator dosyanın adını 'main.py' olarak mühürle (Eğer ismi farklıysa burayı düzelt kanka)
-          cp hesap_makinesi.py main.py || cp calculator_mask.py main.py || true
-          
+          # Dosya isimlerini garantiye alalım
+          cp calculator_mask.py main.py || cp hesap_makinesi.py main.py || true
           export PATH=$PATH:$HOME/.local/bin
+          # Lisansları otomatik onayla ve ateşle
           yes | buildozer -v android debug
 
       - name: Upload APK
